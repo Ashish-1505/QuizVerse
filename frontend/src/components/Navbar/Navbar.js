@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, Flex, Spacer, Button, Menu, MenuButton, MenuItem, MenuList, Heading } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/appContext';
 const Navbar = () => {
     const {user,logoutUser} = useAppContext();
+    const navigate=useNavigate();
   const LinkButton = ({ url = '/', title = 'Home' }) => (
     <Link to={url}>
       <Button colorScheme="teal" variant={'ghost'} mr={4}>{title}</Button>
@@ -31,11 +32,15 @@ const Navbar = () => {
             <MenuButton as={Button} variant="ghost">
               <HamburgerIcon boxSize={6} />
             </MenuButton>
-            <MenuList >
-              <MenuItem>Home</MenuItem>
-              <MenuItem>About</MenuItem>
-              <MenuItem>Login or Signup</MenuItem>
-            </MenuList>
+            {user && user.role=='user'?<MenuList >
+              <MenuItem onClick={()=>navigate("/")}>Home</MenuItem>
+              <MenuItem onClick={logoutUser}>Logout</MenuItem>
+            </MenuList>:<MenuList >
+              <MenuItem onClick={()=>navigate("/createtest")}>Create Quiz</MenuItem>
+              <MenuItem onClick={()=>navigate("/dashboard")}>DashBoard</MenuItem>
+              <MenuItem onClick={()=>navigate("/allquizes")}>All Quizes</MenuItem>
+              <MenuItem onClick={logoutUser}>Logout</MenuItem>
+            </MenuList>}
           </Menu>
         </Box>
       </Flex>
