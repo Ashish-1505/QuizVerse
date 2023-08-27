@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 function App() {
   return (
     <div>
-      <Navbar/>
+      <Navbar/> 
       <Routes>
         <Route path="/" element={<ProtectedRoute><AllQuiz/></ProtectedRoute>}/>
         <Route path="/login" element={<Login/>} />

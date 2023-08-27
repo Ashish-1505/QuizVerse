@@ -7,24 +7,32 @@ const app=express();
 export var io;
 import dotenv from 'dotenv'
 dotenv.config()
+import {dirname} from 'path'
+import { fileURLToPath } from 'url'
+import path from 'path';
 
 import connectDB from './db/connect.js';
 import authRouter from './Routes/authRoutes.js'
 import quizRouter from './Routes/quizRoutes.js'
 import { log } from 'console';
+
+const __dirname=dirname(fileURLToPath(import.meta.url))
+app.use(express.static(path.resolve(__dirname,'./frontend/build')))
 app.use(express.json())
-
-
-app.use('/api/v1/auth',authRouter)
-app.use('/api/v1/quiz',quizRouter)
 
 app.get('/',(req,res)=>{
     res.send('Welcome!')
 })  
+app.use('/api/v1/auth',authRouter)
+app.use('/api/v1/quiz',quizRouter)
+
+
 
 // app.enable('trust proxy')
 
-
+app.get('*',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'./frontend/build','index.html'))
+})
 
  
 export const start=async()=>{
