@@ -130,13 +130,14 @@ useEffect(() => {
               <Button colorScheme="blue" onClick={()=>handleUpdateClick(quiz._id,quiz.title,quiz.description)} variant="outline" >
                 Update
               </Button>
-              <Modal isOpen={isOpen} onClose={onClose}>
+              <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Update Quiz</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-          <Box maxWidth="700px"  maxHeight="500px" overflowY="auto" margin={"auto"} mb={10} mt={10}>
+            
+          <Box maxWidth="700px" maxHeight={["300px","500px"]} overflowY="auto" margin={"auto"} mb={10} mt={10}>
       <FormControl marginBottom="4">
         <FormLabel>Title</FormLabel>
         <Input value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -187,6 +188,7 @@ useEffect(() => {
     </HStack>
 
     </Box>
+    
           </ModalBody>
 
           <ModalFooter>
@@ -196,6 +198,7 @@ useEffect(() => {
             <Button colorScheme='green' variant='ghost' onClick={()=>handleSubmit(quiz._id)}>Update</Button>
           </ModalFooter>
         </ModalContent>
+        
       </Modal>
             </Td>
           </Tr>

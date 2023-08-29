@@ -35,7 +35,7 @@ const Navbar = () => {
             {user && user.role=='user'?<MenuList >
               <MenuItem onClick={()=>navigate("/")}>Home</MenuItem>
               <MenuItem onClick={logoutUser}>Logout</MenuItem>
-            </MenuList>:<MenuList >
+            </MenuList>:user && <MenuList >
               <MenuItem onClick={()=>navigate("/createtest")}>Create Quiz</MenuItem>
               <MenuItem onClick={()=>navigate("/dashboard")}>DashBoard</MenuItem>
               <MenuItem onClick={()=>navigate("/allquizes")}>All Quizes</MenuItem>
