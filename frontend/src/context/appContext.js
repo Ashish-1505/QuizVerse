@@ -162,9 +162,9 @@ const removeUserFromLocalStorage=()=>{
                 position: "top",
               }); 
               addUserToLocalStorage({user,token})
-              navigate("/verifyotp");
+              if(endPoint==="register") navigate("/verifyotp");
         } catch (error) {
-            dispatch({
+            dispatch({ 
                 type:SETUP_USER_ERROR,
                 payload:{msg:error.response.data.msg},
             })
