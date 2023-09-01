@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import { CLEAR_ALERT, DISPLAY_ALERT,REGISTER_USER_BEGIN,REGISTER_USER_SUCCESS,REGISTER_USER_ERROR,LOGIN_USER_BEGIN,LOGIN_USER_SUCCESS,LOGIN_USER_ERROR,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR ,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR,HANDLE_CHANGE,CLEAR_VALUES,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,SET_EDIT_JOB,DELETE_JOB_BEGIN,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,CLEAR_FILTERS,CHANGE_PAGE} from "./actions";
 import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 
 const token=localStorage.getItem('token');
@@ -54,6 +55,7 @@ const AppProvider=({children})=>{
     const[flag,setFlag]=useState(false)
     const[correct,setCorrect]=useState(false)
     const toast=useToast()
+    const navigate=useNavigate()
     //axios
     const authFetch=axios.create({
         baseURL:'/api/v1',
@@ -152,12 +154,6 @@ const removeUserFromLocalStorage=()=>{
                 type:SETUP_USER_SUCCESS,
                 payload:{user,token}
             })
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    addUserToLocalStorage({user,token})
-                  resolve();
-                }, 0);
-              });
             toast({
                 title: endPoint==="login"?"Login Successfull!":"Opt Sent Successfully",
                 status: "success",
@@ -165,6 +161,8 @@ const removeUserFromLocalStorage=()=>{
                 isClosable: true,
                 position: "top",
               }); 
+              addUserToLocalStorage({user,token})
+              navigate("/verifyotp");
         } catch (error) {
             dispatch({
                 type:SETUP_USER_ERROR,

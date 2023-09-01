@@ -40,7 +40,6 @@ const Register = () => {
     })
 
     // console.log(user);
-    navigate("/verifyotp");
   } 
   // useEffect(() => {
   //     if(user && user.verified==true){
