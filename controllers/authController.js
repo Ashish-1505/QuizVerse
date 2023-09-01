@@ -1,6 +1,17 @@
 import User from '../models/User.js'
 import {StatusCodes} from 'http-status-codes'
 import {BadRequestError,UnAuthenticatedError} from '../errors/index.js'
+import nodemailer from 'nodemailer'
+import bcrypt from 'bcryptjs';
+import Otp from '../models/Otp.js';
+var TempUser;
+const transporter=nodemailer.createTransport({
+    service:'gmail',
+    auth:{
+        user:"ashish113sharma@gmail.com",
+        pass:"rviloioucicwoxmn"
+    }
+})
 
 const register=async (req,res)=>{
     const {name,email,password}=req.body
@@ -12,9 +23,12 @@ const register=async (req,res)=>{
     if(userAlreadyExists){
         throw new BadRequestError('User already exists')
     }
-    const user=await User.create({name,email,password})
+    const user=await User.create({name,email,password,verified:false})
     const token=user.createJWT()
-    res.status(StatusCodes.OK).json({user:{email:user.email,lastName:user.lastName,location:user.location,name:user.name},token,location:user.location})
+    // TempUser=user
+
+    sendOtpVerification(user,token,res)
+
     //STATUSCODE.OK.CREATED
 }
 const login=async (req,res)=>{
@@ -60,4 +74,87 @@ const changeRole = async (req,res)=>{
     }
 }
 
-export {register,login,getAllUsers,changeRole}
+const sendOtpVerification=async(user,token,res)=>{
+    try {
+        const otp=`${Math.floor(1000+Math.random()*9000)}`
+        const mailOptions={
+            from:"ashish113sharma@gmail.com",
+            to:user.email,
+            subject:"Verify Your Email",
+            html:`<p> Enter <b> ${otp} </b> in the app to verify your email`,
+        }
+        const salt=10;
+        const hashedOTP=await bcrypt.hash(otp,salt);
+
+        const newOtpVerification=await new Otp({
+            userId:user._id,
+            otp:hashedOTP,
+        })
+
+        await newOtpVerification.save()
+        await transporter.sendMail(mailOptions)
+        res.status(StatusCodes.OK).json({user:{_id:user._id,email:user.email,lastName:user.lastName,location:user.location,name:user.name,verified:user.verified},token,message:"Verification otp email sent"})
+        // res.json({
+        //     status:"PENDING",
+        //     message:"Verification otp email sent",
+        //     data:{ 
+        //         userId:user._id, 
+        //         email:user.email,
+        //     }
+        // })
+    } catch (error) {
+        res.json({
+            status:"FAILED",
+            message:error.message
+        })
+    }
+}
+
+const verifyOTP=async(req,res)=>{
+    
+    try {
+        const {userId,otp}=req.body
+        // console.log(userId);
+        const data=await User.findById(userId)
+        // console.log(data);
+        const {email}=data
+        if(!userId || !otp){
+            throw Error("Empty otp details not valid")
+        }else{
+            const UserVerification=await Otp.find({
+                userId,
+            })
+            if(UserVerification.length<=0){
+                throw new Error(
+                    "Account does not exist or user already verified"
+                )
+            }else{
+                const hashedOTP=UserVerification[0].otp;
+                const validotp=await bcrypt.compare(otp,hashedOTP);
+
+                if(!validotp){
+                    throw new Error("Invalid otp")
+                }else{
+                    const mailOptions={
+                        from:"ashish113sharma@gmail.com",
+                        to:email,
+                        subject:"Email Verified",
+                        html:`Your Email verified successFully`,
+                    }
+                    await User.updateOne({_id:userId},{verified:true});
+                    await Otp.deleteMany({userId})
+                    await transporter.sendMail(mailOptions)
+                    res.json({
+                        status:"Verified",
+                        message:"Email verified"
+                    })
+                }
+            }
+        }
+    } catch (error) {
+        res.json({status:"FAILED",
+        message:error.message,})
+    }
+}
+
+export {register,login,getAllUsers,changeRole,verifyOTP}

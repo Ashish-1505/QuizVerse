@@ -152,14 +152,19 @@ const removeUserFromLocalStorage=()=>{
                 type:SETUP_USER_SUCCESS,
                 payload:{user,token}
             })
-            addUserToLocalStorage({user,token})
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    addUserToLocalStorage({user,token})
+                  resolve();
+                }, 0);
+              });
             toast({
-                title: endPoint==="login"?"Login Successfull!":"Registeration Successfull",
+                title: endPoint==="login"?"Login Successfull!":"Opt Sent Successfully",
                 status: "success",
                 duration: 5000,
                 isClosable: true,
                 position: "top",
-              });
+              }); 
         } catch (error) {
             dispatch({
                 type:SETUP_USER_ERROR,

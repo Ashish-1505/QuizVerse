@@ -39,12 +39,16 @@ const Register = () => {
       endPoint:'register',
     })
 
-  }
-  useEffect(() => {
-      if(user){
-        navigate("/")
-      }
-  }, [user,navigate])
+    // console.log(user);
+    navigate("/verifyotp");
+  } 
+  // useEffect(() => {
+  //     if(user && user.verified==true){
+  //       navigate("/")
+  //     }else{
+  //       navigate("/verifyotp")
+  //     }
+  // }, [user,navigate])
   
   return (
     <Flex align="center" justify="center" height="100vh">

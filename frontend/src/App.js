@@ -13,6 +13,7 @@ import Dashboard from './components/Admin/Dashboard';
 import CreateQuiz from './components/Admin/CreateQuiz';
 import AllQuizes from './components/Admin/AllQuizes';
 import { useEffect } from 'react';
+import OtpVerification from './components/Auth/OtpVerification';
 function App() {
   return (
     <div>
@@ -25,6 +26,7 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
         <Route path="/createtest" element={<ProtectedRoute><CreateQuiz/></ProtectedRoute>} />
         <Route path='/allquizes' element={<ProtectedRoute><AllQuizes/></ProtectedRoute>}/>
+        <Route path='/verifyotp' element={<ProtectedRoute><OtpVerification/></ProtectedRoute>}/>
       </Routes>
       <Footer/> 
     </div> 
