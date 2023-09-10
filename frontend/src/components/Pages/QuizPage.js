@@ -3,11 +3,13 @@ import { Box, Heading, List, ListItem, Text ,Radio,RadioGroup, Button,useToast} 
 import { useAppContext } from '../../context/appContext';
 import axios from 'axios';
 import ScoreCard from './ScoreCard';
+import Loading from './Loading';
 
 const QuizPage = () => {
   const {questions,setQuestions,refresh,setRefresh,flag,setFlag,correct,setCorrect}=useAppContext()
   // const [flag,setFlag]=useState(false);
   var [count,setCount]=useState(0)
+  const [isLoading,setLoading]=useState(false)
   const toast=useToast();
   useEffect(() => {
     const getQuestions=async()=>{
@@ -18,8 +20,10 @@ const QuizPage = () => {
       }
       const storedId=localStorage.getItem('quizId');
       try {
+        setLoading(true)
         const {data}=await axios.get(`/api/v1/quiz/getallquestions/${storedId}`)
         setQuestions(data)
+        setLoading(false)
       } catch (error) {
         console.log("error occured");
       }
@@ -63,7 +67,7 @@ const QuizPage = () => {
   
   return (
     <Box bg={"gray.100"}>
-    <Box maxWidth="800px" margin="auto" p="4"  mb={10} display={"flex"} flexDir={["column","row"]} justifyContent={"space-arround"} >
+    {isLoading?<Loading/>:<Box maxWidth="800px" margin="auto" p="4"  mb={10} display={"flex"} flexDir={["column","row"]} justifyContent={"space-arround"} >
             
       <List spacing="4" > 
       <Heading as="h1" size="lg" mb="4">Quiz Questions</Heading>
@@ -97,7 +101,7 @@ const QuizPage = () => {
     { flag? <Box >
         <ScoreCard score={count} totalQuestions={questions.length}/>
       </Box>:""}
-    </Box>
+    </Box>}
     </Box>
   );
 };

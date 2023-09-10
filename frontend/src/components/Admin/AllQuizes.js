@@ -15,6 +15,8 @@ import  io  from 'socket.io-client';
 const ENDPOINT='http://localhost:5000';
 var socket;
 const AllQuizes = () => {
+
+  const toast=useToast()
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [questions, setQuestions] = useState([{ question: '', options: ['', '', '',''], correctOptionIndex: 0 }]);

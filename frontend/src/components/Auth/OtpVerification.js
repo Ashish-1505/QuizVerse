@@ -37,7 +37,8 @@ const OtpPage = () => {
         
         // Store the updated user object back in localStorage
         localStorage.setItem('user', JSON.stringify(storedUser));
-        navigate("/")
+        if(user.role==='user') navigate("/")
+        else navigate("/dashboard")
       } 
       toast({
         title: "Email Verified Successfully!",
@@ -65,7 +66,7 @@ const OtpPage = () => {
       <Heading size={["sm","lg"]} marginBottom={4}>Enter 4-Digit OTP</Heading>
       <Stack spacing={4} align="center" display={"flex"} flexDir={"row"}>
         <PinInput
-          value={otp}
+          value={otp} 
           onChange={(value) => setOtp(value)}
           autoFocus
           size="lg"

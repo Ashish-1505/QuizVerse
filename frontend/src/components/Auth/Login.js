@@ -17,7 +17,7 @@ const Login = () => {
   const toast=useToast()
   const [values, setValues] = useState(initialState)
   const {user,isLoading,showAlert,displayAlert,registerUser,loginUser,setupUser}=useAppContext()
-
+ 
   const handleChange=(e)=>{
     setValues({...values,[e.target.name]:e.target.value})
   }
@@ -42,7 +42,10 @@ const Login = () => {
     
   }
   useEffect(() => {
-    if(user && user.role==='admin'){
+    if(user && user.verified===false){
+      navigate("/verifyotp")
+    }
+    else if(user && user.role==='admin'){
       navigate("/dashboard") 
     }else if(user && user.role==='user'){
       navigate("/")

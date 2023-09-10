@@ -105,6 +105,9 @@ const removeUserFromLocalStorage=()=>{
     localStorage.removeItem('user')
     localStorage.removeItem('token')
     localStorage.removeItem('location')
+    if(localStorage.getItem('quizId')){
+        localStorage.removeItem('quizId')
+    }
 
 }
 

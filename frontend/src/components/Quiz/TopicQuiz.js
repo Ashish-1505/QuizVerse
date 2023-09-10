@@ -4,6 +4,7 @@ import { Box, Center, Grid, Heading, Stack, VStack, useToast } from '@chakra-ui/
 import { useAppContext } from '../../context/appContext';
 import  io from 'socket.io-client';
 import axios from 'axios';
+import Loading from '../Pages/Loading';
 const ENDPOINT='http://localhost:5000';
 var socket;
 const TopicQuiz = () => {
@@ -12,6 +13,7 @@ const TopicQuiz = () => {
   const[socketConnected,setSocketConnected]=useState(false)
   const toast=useToast()
   const [alert,setAlert]=useState(false)
+  const [isLoading,setLoading]=useState(false)
 useEffect(() => {
     socket=io(ENDPOINT,{
       transports:["websocket","polling"]
@@ -43,24 +45,34 @@ useEffect(() => {
       localStorage.removeItem('quizId')
     }
       try {
+        setLoading(true)
         const {data}=await axios.get('/api/v1/quiz/getallquizes')
         setQuizzes(data)
+        setLoading(false)
       } catch (error) {
-        console.error('Failed to fetch quizzes', error);
+        // console.error('Failed to fetch quizzes', error);
+        toast({
+          title: "Error Occured",
+          status: "error",
+          description:error.response?.data.message,
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
       }
       setAlert(false)
   }
 
   return (  
     <Box>
-    <VStack alignItems={'center'}>
+{isLoading?<Loading/>:<VStack alignItems={'center'}>
         <Heading mt={4}>Available tests</Heading>
         <Grid templateColumns={['1fr', '1fr 1fr 1fr']} gridGap={"50px"} >
         {quiz.map((q) => {
             return <QuizCard key={q._id} title={q.title} description={q.description} id={q._id}/>
         })}                                                    
         </Grid>  
-    </VStack>
+    </VStack>}
     </Box>
   ) 
 } 
