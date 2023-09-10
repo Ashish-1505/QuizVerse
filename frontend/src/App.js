@@ -29,7 +29,7 @@ function App() {
         <Route path="/createtest" element={<ProtectedRoute allowedRoles={['admin']}><CreateQuiz/></ProtectedRoute>} />
         <Route path='/allquizes' element={<ProtectedRoute allowedRoles={['admin']}><AllQuizes/></ProtectedRoute>}/>
         <Route path='/verifyotp' element={<AlreadyVerified><OtpVerification/></AlreadyVerified>}/>
-        <Route path='/unauthorizedaccess' element={<ProtectedRoute><UnauthorizedAccess/></ProtectedRoute>}/>
+        <Route path='/unauthorizedaccess' element={<UnauthorizedAccess/>}/>
       </Routes>
       <Footer/> 
     </div> 
