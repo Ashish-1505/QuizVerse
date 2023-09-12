@@ -12,7 +12,7 @@ import {
 import axios from 'axios';
 import { useAppContext } from '../../context/appContext';
 import  io  from 'socket.io-client';
-const ENDPOINT='http://localhost:5000';
+const ENDPOINT='https://quizverse.onrender.com/';
 var socket;
 const AllQuizes = () => {
 

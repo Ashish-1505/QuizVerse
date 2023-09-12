@@ -5,7 +5,7 @@ import { useAppContext } from '../../context/appContext';
 import  io from 'socket.io-client';
 import axios from 'axios';
 import Loading from '../Pages/Loading';
-const ENDPOINT='http://localhost:5000';
+const ENDPOINT='https://quizverse.onrender.com/';
 var socket;
 const TopicQuiz = () => {
   const [quiz, setQuizzes] = useState([]);

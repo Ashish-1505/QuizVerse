@@ -6,7 +6,7 @@ import ScoreCard from './ScoreCard';
 import Loading from './Loading';
 
 const QuizPage = () => {
-  const {questions,setQuestions,refresh,setRefresh,flag,setFlag,correct,setCorrect}=useAppContext()
+  const {questions,setQuestions,refresh,setRefresh,flag,setFlag,correct,setCorrect,isSubmitClicked,setIsSubmitClicked}=useAppContext()
   // const [flag,setFlag]=useState(false);
   var [count,setCount]=useState(0)
   const [isLoading,setLoading]=useState(false)
@@ -36,7 +36,8 @@ const QuizPage = () => {
     updatedQuestions[questionIndex].selectedOption = value;
     setQuestions(updatedQuestions);
   };
-  const handleClick=()=>{
+  const handleClick=(e)=>{
+    
     if(count>=questions.length){
       setCount(0)
       return;
@@ -53,6 +54,8 @@ const QuizPage = () => {
       }
       setFlag(true)
     })
+    setIsSubmitClicked(true);
+
     if(window.innerWidth<748){
       console.log("1");
       toast({
@@ -95,7 +98,7 @@ const QuizPage = () => {
             {flag?<Box mt={"5"} bg={question.result==="Correct"?"green.200":"red.200"} borderRadius={"4px"} textAlign={"center"}>{question.result}</Box>:""}
           </ListItem>
         ))}
-        <Button bg={'yellow.200'} alignItems={"center"} mt={5} mb={10} onClick={handleClick}>Submit</Button>
+        <Button bg={'yellow.200'} alignItems={"center"} mt={5} mb={10} onClick={handleClick} isDisabled={isSubmitClicked}>Submit</Button>
       </List>
       
     { flag? <Box >

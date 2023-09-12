@@ -3,10 +3,11 @@ import { Box, Text, Heading, Button } from '@chakra-ui/react';
 import { useAppContext } from '../../context/appContext';
 
 const ScoreCard = ({score, totalQuestions }) => {
-    const {setRefresh,flag,setFlag,correct,setCorrect}=useAppContext()
+    const {setRefresh,flag,setFlag,correct,setCorrect,setIsSubmitClicked,IsSubmitClicked}=useAppContext()
     const handleSubmit=()=>{
         setRefresh(true)
         setFlag(false)
+        setIsSubmitClicked(false)
     }
     const handleCorrect=()=>{
         setCorrect(true)
@@ -22,7 +23,7 @@ const ScoreCard = ({score, totalQuestions }) => {
       <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit}>
         Retake Quiz
       </Button>
-      <Button bg={"red.600"} marginLeft={["5px","2px"]} colorScheme="teal" onClick={handleCorrect}>
+      <Button bg={"red.600"} marginLeft={["0px","0px"]} colorScheme="teal" onClick={handleCorrect}>
         Check Correct answers
       </Button>
     </Box>
