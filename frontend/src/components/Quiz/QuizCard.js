@@ -18,7 +18,7 @@ const QuizCard = ({title, description, id }) => {
   return (
     <div>
   <Box
-      bg="white"
+      bg="#EAEAEA"
       boxShadow="md"
       p={4}
       borderRadius="md"

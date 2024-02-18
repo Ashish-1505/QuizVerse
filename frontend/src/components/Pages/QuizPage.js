@@ -10,10 +10,12 @@ const QuizPage = () => {
   // const [flag,setFlag]=useState(false);
   var [count,setCount]=useState(0)
   const [isLoading,setLoading]=useState(false)
+  const [isSelected,setIsSelected]=useState(false)
   const toast=useToast();
   useEffect(() => {
     const getQuestions=async()=>{
       if(refresh===true){
+        setFlag(false)
         setCount(0);
         setRefresh(false)
         setCorrect(false)
@@ -32,6 +34,7 @@ const QuizPage = () => {
   }, [refresh]);  
   
    const handleOptionChange = (questionIndex, value) => {
+    // console.log(questionIndex);
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].selectedOption = value;
     setQuestions(updatedQuestions);
@@ -55,32 +58,33 @@ const QuizPage = () => {
       setFlag(true)
     })
     setIsSubmitClicked(true);
+  }
+  const handleOptionClick = (questionIndex, optionIndex) => {
+    // console.log(optionIndex);
+    setIsSelected(true)
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].selectedOption = updatedQuestions[questionIndex].options[optionIndex];
+    setQuestions(updatedQuestions);
+  };
 
-    if(window.innerWidth<748){
-      console.log("1");
-      toast({
-        title: "Please scroll down to check your score!",
-        status: "info",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
-    }
+  const handleSubmit=()=>{
+    setRefresh(true)
+    setFlag(false)
+    setIsSubmitClicked(false)
   }
   
   return (
-    <Box bg={"gray.100"}>
-    {isLoading?<Loading/>:<Box maxWidth="800px" margin="auto" p="4"  mb={10} display={"flex"} flexDir={["column","row"]} justifyContent={"space-arround"} >
+    <Box height={"100%"}>
+    {!flag || correct?<>{isLoading?<Loading/>:<Box maxWidth="800px" margin="auto" p="4"  mb={10} display={"flex"} flexDir={["column","row"]} justifyContent={"space-arround"} >
             
       <List spacing="4" > 
       <Heading as="h1" size="lg" mb="4">Quiz Questions</Heading>
         {questions.map((question, questionIndex) => (
           <ListItem key={question._id} p="4" borderWidth="1px" borderColor="gray.200" maxW="sm"
-        
           overflow="hidden"
           boxShadow="md"
-          bg="white">
-            <Heading as="h2" size="md" mb="2">{question.question}</Heading>
+          bg="gray.800">
+            <Heading as="h2" size="md" mb="2" color={"white"}>{question.question}</Heading>
             <Text fontWeight="bold">Options:</Text>
             <RadioGroup
               onChange={(value) => handleOptionChange(questionIndex, value)}
@@ -89,23 +93,31 @@ const QuizPage = () => {
             >
               <List styleType="none" ml="4">
                 {question.options.map((option, index) => (
-                  <ListItem key={index} bg={correct&&index===question.correctOptionIndex?'green.200':""}>
-                    <Radio value={option}>{option}</Radio>
+                  <ListItem key={index} bg={correct && index === question.correctOptionIndex ? 'green.200' : question.selectedOption === option ? 'red.600' : ''}  borderRadius="md" borderWidth="2px" p="2" mb="2"  _hover={!question.selectedOption || question.selectedOption !== option ? { bg: "gray.500" } : {}} cursor="pointer" color={"white"} onClick={() => handleOptionClick(questionIndex, index)}>
+                    {/* <Text color={"white"}>{option}</Text> */}
+                    <Radio value={option}  size="lg">{option}</Radio>
                   </ListItem> 
-                ))}
+                ))} 
               </List>
             </RadioGroup>
             {flag?<Box mt={"5"} bg={question.result==="Correct"?"green.200":"red.200"} borderRadius={"4px"} textAlign={"center"}>{question.result}</Box>:""}
-          </ListItem>
+          </ListItem> 
         ))}
-        <Button bg={'yellow.200'} alignItems={"center"} mt={5} mb={10} onClick={handleClick} isDisabled={isSubmitClicked}>Submit</Button>
+
+        {!correct?<Button bg={'green.500'} color={"white"} alignItems={"center"} mt={5} mb={10} onClick={handleClick} isDisabled={isSubmitClicked}>Submit</Button>:
+        <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit} mt={5} mb={10}>
+          Retake Quiz 
+        </Button>}
       </List>
       
-    { flag? <Box >
+      
+    </Box>}</>
+    :
+    <Box display={"flex"} justifyContent={"center"}> 
         <ScoreCard score={count} totalQuestions={questions.length}/>
-      </Box>:""}
     </Box>}
     </Box>
+      
   );
 };
 

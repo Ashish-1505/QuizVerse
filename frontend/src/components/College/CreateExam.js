@@ -1,17 +1,37 @@
-import React, { useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Stack,ScrollView, HStack,Heading,useToast } from '@chakra-ui/react';
+import React, { useState,useEffect } from 'react';
+import { Box, Button, FormControl, FormLabel, Input, Stack,ScrollView, HStack,Heading,useToast,Select } from '@chakra-ui/react';
 import axios from 'axios';
 import { useAppContext } from '../../context/appContext';
 
-const CreateQuiz = () => {
+const CreateExam = () => {
+
+// const options = [
+//         { value: '1', label: 'Harvard University' },
+//         { value: '2', label: 'Stanford University' },
+//         { value: '3', label: 'Massachusetts Institute of Technology (MIT)' },
+//         // Add more college options as needed 
+//       ];
+
+  const [selectedOptionName, setSelectedOptionName] = useState('');
+  const [selectedOption, setSelectedOption] = useState({});
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [duration, setDuration] = useState('');
+  const [examCode, setExamCode] = useState('');
   const [questions, setQuestions] = useState([{ question: '', options: ['', '', '',''], correctOptionIndex: 0 }]);
   const toast=useToast()
   const{user}=useAppContext()
   const handleAddQuestion = () => {
     setQuestions([...questions, { question: '', options: ['', '', '',''], correctOptionIndex: 0 }]);
   };
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    const optionObject = options.find(option => `${option.name},${option.location}` === value);
+    setSelectedOption(optionObject)
+    setSelectedOptionName(value);
+    console.log(selectedOptionName);
+    // onSelect(value);
+  }; 
 
   const handleQuestionChange = (index, field, value) => {
     const updatedQuestions = [...questions];
@@ -33,7 +53,7 @@ const CreateQuiz = () => {
 
  
 const handleSubmit = async () => {
-    if(!title || !description || !questions){
+    if(!title || !duration || !examCode || !questions ){
       toast({
         title: "Please Enter all the feilds!",
         status: "error",
@@ -43,27 +63,31 @@ const handleSubmit = async () => {
       });
       return
     }
-    const quizData = {
+    const examData = {
       title,
-      description,
+      duration,
+      college:selectedOptionName,
+      examCode,
       questions,
       createdBy: user.name, // Replace with the appropriate user information
     };
   
     try {
 
-      const response = await axios.post('/api/v1/quiz/createquiz', quizData);
+      const response = await axios.post('/api/v1/quiz/createcollegeexam', examData);
       
       if (response.status === 201) {
         toast({
-          title: "Quiz Created Successfully!",
+          title: "Exam Created Successfully!",
           status: "success",
           duration: 5000,
           isClosable: true,
           position: "top",
         });
         setTitle('');
-        setDescription('');
+        setDuration('');
+        setExamCode('')
+        setSelectedOptionName('')
         setQuestions([{ question: '', options: ['', '', '',''], correctOptionIndex: 0 }]);
 
       } else {
@@ -85,18 +109,64 @@ const handleSubmit = async () => {
       });
     }
   }; 
+
+
+  const [options,setOptions]=useState([])
+    useEffect(() => {
+      const getColleges=async()=>{
+        try {
+          const {data} = await axios.get('/api/v1/quiz/getcolleges');
+          setOptions(data)
+          console.log(options);
+        } catch (error) {  
+          console.error('Error Finding college:', error); 
+        } 
+      }     
+      getColleges();
+    }, [])
  
   return (
     <Box maxWidth="700px"  maxHeight="500px" overflowY="auto" margin={["10","auto"]} mb={10} mt={10} >
-      <Heading marginBottom={"10"} marginTop={"10"}>Create Quiz</Heading>
+      <Heading marginBottom={"10"} marginTop={"10"}>Create Exam</Heading>
       <FormControl marginBottom="4">
         <FormLabel>Title</FormLabel>
         <Input value={title} onChange={(e) => setTitle(e.target.value)} />
       </FormControl>
 
       <FormControl marginBottom="4">
-        <FormLabel>Description</FormLabel>
-        <Input value={description} onChange={(e) => setDescription(e.target.value)} />
+        <FormLabel>Duration(in minutes)</FormLabel>
+        <Input value={duration} onChange={(e) => setDuration(e.target.value)} />
+      </FormControl>
+
+      <Box
+        bg="yellow.700" // Dark gray background color
+        border="1px"
+        borderColor="gray.200"
+        borderRadius="md"
+        p="3"
+        mb={4}
+        mt={4}
+      >
+        <Select
+          placeholder="Select College/University"
+          value={selectedOptionName}
+          onChange={handleChange}
+          size="lg" // Increase size for larger dropdown
+          variant="outline"
+          focusBorderColor="yellow.400" // Change focus border color
+          color="white" // Text color
+        >
+          {options.map((option) => (
+            <option key={option._id} value={`${option.name},${option.location}`} style={{ color: 'black' }}>
+              {option.name},{option.location}
+            </option>
+          ))} 
+        </Select>
+      </Box>  
+
+      <FormControl marginBottom="4">
+        <FormLabel>Exam Code</FormLabel>
+        <Input type='Number' value={examCode} onChange={(e) => setExamCode(e.target.value)} />
       </FormControl>
 
       {questions.map((question, index) => (
@@ -137,7 +207,7 @@ const handleSubmit = async () => {
         Add Question
       </Button>
 
-      <Button bg={"blue.500"} color={"white"} onClick={handleSubmit} marginBottom={"10"}>
+      <Button bg={"blue.500"} color={"white"}  onClick={handleSubmit} marginBottom={"10"}>
         Submit Quiz
       </Button>
     </HStack>
@@ -146,4 +216,4 @@ const handleSubmit = async () => {
   );
 };
 
-export default CreateQuiz;
+export default CreateExam;

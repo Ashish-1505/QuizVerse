@@ -68,11 +68,11 @@ const Register = () => {
             <FormLabel>Password</FormLabel>
             <Input type="password" placeholder="Enter your password" onChange={handleChange} name="password" value={values.password}/>
           </FormControl>
-          <Button type="submit" isLoading={isLoading} colorScheme="teal"  mr={4} width={'full'}>Register</Button>
+          <Button type="submit" isLoading={isLoading} bg={"green.400"}  color={"white"} mr={4} width={'full'}>Register</Button>
           <Box my={'4'}>
             Already Registered?{' '}
             <Link to="/login">
-              <Button color={'orange'} variant="link" >
+              <Button color={'#2d3748'} variant="link" >
                 Login
               </Button>{' '}
               here

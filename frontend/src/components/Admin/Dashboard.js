@@ -52,7 +52,7 @@ const Dashboard = () => {
       <Table variant="striped" >
         <Thead>
           <Tr>
-            <Th>ID</Th>
+            <Th>Email</Th>
             <Th>Name</Th>
             <Th>Role</Th>
             <Th>Action</Th>
@@ -60,8 +60,8 @@ const Dashboard = () => {
         </Thead>
         <Tbody> 
           {users.map((user) => (
-            <Tr key={user._id}>
-              <Td>{user._id}</Td>
+            user.role==='admin'?<></>:<Tr key={user._id}>
+              <Td>{user.email}</Td>
               <Td>{user.name}</Td>
               <Td>{user.role}</Td>
               <Td>

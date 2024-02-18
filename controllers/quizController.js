@@ -1,4 +1,6 @@
 import Quiz from "../models/Quiz.js";
+import Exam from "../models/Exam.js";
+import College from "../models/College.js"; 
 import { io } from "../server.js";
 const createQuiz=async(req,res)=>{
     try {
@@ -85,5 +87,104 @@ const updateQuiz=async(req,res)=>{
     res.status(500).json({ message: 'Server Error' });
   }
 }
-export {createQuiz,getAllQuizes,getAllQuestions,deleteQuiz,updateQuiz}
+
+const addCollege=async(req,res)=>{
+  try {
+    const { name, location } = req.body;
+    if(!name || !location){
+      res.status(500).json({ message: 'All Feilds are required' });
+    }
+    const newCollege = new College({
+      name,
+      location
+    });
+    await newCollege.save();
+    res.status(201).json({ message: 'College added successfully', college: newCollege });
+  } catch (error) {
+    console.error('Error adding college:', error);
+    res.status(500).json({ message: 'Failed to add college' });
+  }
+}
+
+const getColleges=async(req,res)=>{
+  try {
+    const colleges = await College.find();
+    res.status(200).json(colleges);
+  } catch (error) {
+    console.error('Error fetching colleges:', error);
+    res.status(500).json({ message: 'Failed to fetch colleges' });
+  }
+}
+
+const createCollegeExam=async(req,res)=>{
+  try {
+      const { title, duration,college,examCode, questions } = req.body;
+  
+      if(!title || !duration || !college || !questions || !examCode){
+        res.status(500).json({ error: 'All fields are mandatory' });
+      }
+      // Create a new quiz
+      const exam = new Exam({
+        title,
+        duration,
+        college,
+        examCode,
+        questions,
+      });
+  
+      // Save the quiz to the database
+      const savedExam = await exam.save();
+  
+      res.status(201).json(savedExam);
+    } catch (error) {
+      console.error('Failed to create Exam', error);
+      res.status(500).json({ error: 'Failed to create Exam' });
+    }
+}
+
+const getExam=async(req,res)=>{
+  try {
+    const collegeName = req.params.collegeName;
+    const quizzes = await Exam.find({ college: collegeName });
+    res.status(200).json(quizzes);
+  } catch (error) {
+    console.error('Error fetching quizzes:', error);
+    res.status(500).json({ message: 'Failed to fetch quizzes' });
+  }
+}
+
+const getExamById=async(req,res)=>{
+  try {
+    const examId = req.params.examId;
+    // console.log(req.params.examId);
+    const exam = await Exam.findById(examId)
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    } 
+    res.status(200).json(exam);
+  } catch (error) {
+    console.error('Error fetching exam:', error);
+    res.status(500).json({ message: 'Failed to fetch exam' });
+  }
+} 
+
+const getAllExamQuestions = async(req,res)=>{
+  try {
+    const {id}=req.params
+    // console.log(id);
+    const exam=await Exam.findById(id)
+    if (!exam) {
+      return res.status(404).json({ error: 'Exam not found' });
+    }
+
+    const questions = exam.questions;
+
+    res.json(questions);
+  } catch (error) {
+    console.error('Failed to fetch exam questions', error);
+    res.status(500).json({ error: 'Failed to fetch exam questions' });
+  }
+}
+
+export {createQuiz,getAllQuizes,getAllQuestions,deleteQuiz,updateQuiz,addCollege,getColleges,createCollegeExam,getExam,getAllExamQuestions,getExamById}
 

@@ -26,7 +26,7 @@ const register=async (req,res)=>{
     const user=await User.create({name,email,password,verified:false})
     const token=user.createJWT()
     // TempUser=user
-
+      
     sendOtpVerification(user,token,res)
 
     //STATUSCODE.OK.CREATED
@@ -61,7 +61,7 @@ const getAllUsers=async (req,res)=>{
 const changeRole = async (req,res)=>{
     try {
         const user = await User.findById(req.params.id);
-        if (user.role === "user") user.role = "admin";
+        if (user.role === "user") user.role = "college";
         else user.role = "user"; 
         await user.save();
         res.status(200).json({
@@ -93,7 +93,7 @@ const sendOtpVerification=async(user,token,res)=>{
 
         await newOtpVerification.save()
         await transporter.sendMail(mailOptions)
-        res.status(StatusCodes.OK).json({user:{_id:user._id,email:user.email,lastName:user.lastName,location:user.location,name:user.name,verified:user.verified},token,message:"Verification otp email sent"})
+        res.status(StatusCodes.OK).json({user:{_id:user._id,email:user.email,lastName:user.lastName,location:user.location,name:user.name,verified:user.verified,role:user.role},token,message:"Verification otp email sent"})
         // res.json({
         //     status:"PENDING",
         //     message:"Verification otp email sent",
@@ -119,7 +119,7 @@ const verifyOTP=async(req,res)=>{
         // console.log(data);
         const {email}=data
         if(!userId || !otp){
-            throw Error("Empty otp details not valid")
+            throw Error("Empty otp details not valid") 
         }else{
             const UserVerification=await Otp.find({
                 userId,

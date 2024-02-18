@@ -6,7 +6,7 @@ import {VStack } from '@chakra-ui/react'
 const AllQuiz = () => {
   
   return (
-    <div style={{ backgroundColor: '#e2e8f0', minHeight: '100vh' }}> 
+    <div style={{minHeight: '100vh' }}> 
         <TopicQuiz/>
     </div>
   )

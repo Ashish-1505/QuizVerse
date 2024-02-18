@@ -95,7 +95,7 @@ useEffect(() => {
         setQuizzes(data)
       } catch (error) {
         console.error('Failed to fetch quizzes', error);
-      }
+      } 
        
   }
   const handleClick=async(quizid)=>{

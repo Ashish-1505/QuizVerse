@@ -44,6 +44,9 @@ useEffect(() => {
     if(localStorage.getItem('quizId')){
       localStorage.removeItem('quizId')
     }
+    if(localStorage.getItem('examId')){
+      localStorage.removeItem('examId')
+    }
       try {
         setLoading(true)
         const {data}=await axios.get('/api/v1/quiz/getallquizes')
@@ -66,7 +69,7 @@ useEffect(() => {
   return (  
     <Box>
 {isLoading?<Loading/>:<VStack alignItems={'center'}>
-        <Heading mt={4}>Available tests</Heading>
+        <Heading mt={4}>Available Quizes For Practice</Heading>
         <Grid templateColumns={['1fr', '1fr 1fr 1fr']} gridGap={"50px"} >
         {quiz.map((q) => {
             return <QuizCard key={q._id} title={q.title} description={q.description} id={q._id}/>

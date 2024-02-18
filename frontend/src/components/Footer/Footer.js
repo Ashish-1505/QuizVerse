@@ -4,7 +4,7 @@ import { Box, Text } from '@chakra-ui/react';
 const Footer = () => {
   return (
     <Box
-      bg="#FAF089"
+      bg="#edf2f7"
       py={4}
       px={8}
       textAlign="center"
@@ -14,6 +14,8 @@ const Footer = () => {
       bottom={0}
       left={0}
       width="100%"
+      fontWeight={"bold"}
+      letterSpacing={"2px"}
     >
       <Text>
         © 2023 Quiz Verse. All rights reserved.

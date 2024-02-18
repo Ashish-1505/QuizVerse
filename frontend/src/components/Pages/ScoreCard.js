@@ -13,17 +13,17 @@ const ScoreCard = ({score, totalQuestions }) => {
         setCorrect(true)
     }
   return (
-    <Box maxW="sm" maxHeight={"sm"} borderWidth="1px" borderRadius="lg" overflow="hidden" p={6} boxShadow="md" bg="white" marginLeft={["10px","100px"]}  mt={["10px","50px"]}  fontSize={"2xl"} marginBottom={["10"]}>
-      <Heading as="h3" size="lg" mb={4}>
-        Quiz Results
+    <Box maxW={"sm"} height={"40vh"} borderWidth="1px" borderRadius="lg" overflow="hidden" p={6} boxShadow="md"   mt={["100px","150px"]}  fontSize={"2xl"} marginBottom={["10"]} bg={"gray.600"}>
+      <Heading as="h3" size="lg" mb={4} color={"white"}>
+        Quiz Result
       </Heading>
-      <Text mb={4}>
+      <Text mb={4} color={"white"}>
         Your score: {score} / {totalQuestions}
       </Text>
-      <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit}>
+      <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit} mt={["1rem","5.5rem"]}>
         Retake Quiz
       </Button>
-      <Button bg={"red.600"} marginLeft={["0px","0px"]} colorScheme="teal" onClick={handleCorrect}>
+      <Button bg={"red.600"} marginLeft={["1px","3px"]} mt={["1.2rem","5.5rem"]} colorScheme="teal" onClick={handleCorrect}>
         Check Correct answers
       </Button>
     </Box>

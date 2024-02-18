@@ -16,6 +16,13 @@ import { useEffect } from 'react';
 import OtpVerification from './components/Auth/OtpVerification';
 import AlreadyVerified from './components/Extra/AlreadyVerified';
 import UnauthorizedAccess from './components/Extra/UnauthorisedAccess';
+import Exams from './components/Exams/Exams';
+import FillDetailsPage from './components/Exams/FillDetailsPage';
+import AddCollege from './components/Admin/AddCollege';
+import ExamPage from './components/Exams/ExamPage';
+
+import CollegeDashboard from './components/College/CollegeDashboard';
+import CreateExam from './components/College/CreateExam';
 function App() {
   return (
     <div>
@@ -25,13 +32,19 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/quiz" element={<ProtectedRoute allowedRoles={['user']}><QuizPage/></ProtectedRoute>} />
+        <Route path="/exam" element={<ProtectedRoute allowedRoles={['user']}><ExamPage/></ProtectedRoute>} />
+        <Route path="/collegeTest" element={<ProtectedRoute allowedRoles={['user']}><Exams/></ProtectedRoute>} />
+        <Route path="/filldetails" element={<ProtectedRoute allowedRoles={['user']}><FillDetailsPage/></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><Dashboard/></ProtectedRoute>} />
+        <Route path="/collegeDashboard" element={<ProtectedRoute allowedRoles={['college']}><CollegeDashboard/></ProtectedRoute>} />
+        <Route path="/createExam" element={<ProtectedRoute allowedRoles={['college']}><CreateExam/></ProtectedRoute>} />
         <Route path="/createtest" element={<ProtectedRoute allowedRoles={['admin']}><CreateQuiz/></ProtectedRoute>} />
         <Route path='/allquizes' element={<ProtectedRoute allowedRoles={['admin']}><AllQuizes/></ProtectedRoute>}/>
+        <Route path='/addcollege' element={<ProtectedRoute allowedRoles={['admin']}><AddCollege/></ProtectedRoute>}/>
         <Route path='/verifyotp' element={<AlreadyVerified><OtpVerification/></AlreadyVerified>}/>
         <Route path='/unauthorizedaccess' element={<UnauthorizedAccess/>}/>
       </Routes>
-      <Footer/> 
+      <Footer/>  
     </div> 
   );
 }

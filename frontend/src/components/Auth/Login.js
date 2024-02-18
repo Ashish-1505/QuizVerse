@@ -46,10 +46,13 @@ const Login = () => {
       navigate("/verifyotp")
     }
     else if(user && user.role==='admin'){
-      navigate("/dashboard") 
+      navigate("/dashboard")
     }else if(user && user.role==='user'){
       navigate("/")
     }
+   else if(user && user.role==='college'){
+    navigate("/collegeDashboard")
+  }
 }, [user,navigate])
   return (
     <Flex align="center" justify="center" height="100vh" >
@@ -66,11 +69,11 @@ const Login = () => {
             <FormLabel>Password</FormLabel>
             <Input type="password" placeholder="Enter your password" onChange={handleChange} name="password" value={values.password}/>
           </FormControl>
-          <Button type="submit" isLoading={isLoading} colorScheme="teal"  mr={4} width={'full'}>Login</Button>
+          <Button type="submit" isLoading={isLoading} bg={"blue.400"}  color={"white"}  mr={4} width={'full'}>Login</Button>
           <Box my={'4'}>
             New User?{' '}
             <Link to="/register">
-              <Button color={'orange'} variant="link">
+              <Button color={'#2d3748'} variant="link">
                 Sign Up
               </Button>{' '}
               here

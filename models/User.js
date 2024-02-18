@@ -9,7 +9,7 @@ const UserSchema=new mongoose.Schema({
         message:'Please provide a valid email'
     },unique:true,},
     password:{type:String,required:[true,'Please provide password'],minlength:6,select:false,},
-    role:{type:String,enum:['admin','user'],default:'user'},
+    role:{type:String,enum:['admin','user','college'],default:'user'},
     verified:{type:Boolean,default:false}
 }) 
 
