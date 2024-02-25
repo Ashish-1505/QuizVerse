@@ -14,7 +14,6 @@ const Footer = () => {
       bottom={0}
       left={0}
       width="100%"
-      fontWeight={"bold"}
       letterSpacing={"2px"}
     >
       <Text>

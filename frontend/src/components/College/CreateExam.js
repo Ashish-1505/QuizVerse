@@ -69,7 +69,7 @@ const handleSubmit = async () => {
       college:selectedOptionName,
       examCode,
       questions,
-      createdBy: user.name, // Replace with the appropriate user information
+      createdBy: user._id, // Replace with the appropriate user information
     };
   
     try {

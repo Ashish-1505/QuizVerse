@@ -1,9 +1,84 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { Box, Heading, Table, Thead, Tbody, Tr, Th, Td, Button, useToast } from '@chakra-ui/react';
+import axios from 'axios';
+import { useAppContext } from '../../context/appContext';
 
 const CollegeDashboard = () => {
-  return (
-    <div>CollegeDashboard</div>
-  )
-}
+  const [exams, setExams] = useState([]);
+  const toast=useToast()
+  const {user}=useAppContext()
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const response = await axios.get(`/api/v1/quiz/fetchResult/${user._id}`);
+        setExams(response.data);
+      } catch (error) {
+        console.error('Failed to fetch exams', error);
+      }
+    };
 
-export default CollegeDashboard
+    fetchExams();
+  }, []);
+
+  const handleClick=async(examId,examTitle)=>{
+    try {
+      const response = await axios.get(`/api/v1/quiz/downloadResults/${examId}`, {
+        responseType: 'blob',
+      });
+
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${examTitle}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      toast({
+        title: 'Failed to download file',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }
+
+  return (
+    <Box p={4}>
+      <Box textAlign="center" mb={4}>
+  <Heading as="h1" size="xl">Exams created by your institution</Heading>
+</Box>
+      <Box overflowX="auto" >
+      <Table variant="striped" colorScheme="gray">
+        <Thead>
+          <Tr>
+            <Th>Exam Title</Th>
+            <Th>Max Marks</Th>
+            <Th>Attempted By</Th>
+            <Th>Actions</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {exams.map(exam => (
+            <Tr key={exam._id}>
+              <Td>{exam.examTitle}</Td>
+              <Td>{exam.maxScore}</Td>
+              <Td>{exams.length}</Td>
+              <Td>
+                <Button colorScheme="teal" size="sm" onClick={()=>handleClick(exam.examId,exam.examTitle)}>View Results</Button>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+      </Box>
+    </Box>
+  );
+};
+
+export default CollegeDashboard;

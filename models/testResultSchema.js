@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 
 const testResultSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  createdBy:{
+    type: String,
     required: true
   },
   examId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Exam',
+    type: String,
+    required: true
+  },
+  examTitle:{
+    type: String,
     required: true
   },
   name:{
@@ -19,8 +21,13 @@ const testResultSchema = new mongoose.Schema({
     type:String,
     required:true
   },
-  group:{
+  email:{
     type:String,
+    required:true
+  },
+  maxScore:{
+    type: Number,
+    required: true
   },
   score: {
     type: Number,

@@ -20,10 +20,10 @@ const ScoreCard = ({score, totalQuestions }) => {
       <Text mb={4} color={"white"}>
         Your score: {score} / {totalQuestions}
       </Text>
-      <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit} mt={["1rem","5.5rem"]}>
+      <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit} mt={["4.5rem","5.5rem"]}>
         Retake Quiz
       </Button>
-      <Button bg={"red.600"} marginLeft={["1px","3px"]} mt={["1.2rem","5.5rem"]} colorScheme="teal" onClick={handleCorrect}>
+      <Button bg={"red.600"} marginLeft={["2px","3px"]} mt={["4.5rem","5.5rem"]} colorScheme="teal" onClick={handleCorrect}>
         Check Correct answers
       </Button>
     </Box>

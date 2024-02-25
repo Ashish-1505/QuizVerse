@@ -2,6 +2,8 @@ import Quiz from "../models/Quiz.js";
 import Exam from "../models/Exam.js";
 import College from "../models/College.js"; 
 import { io } from "../server.js";
+import excel from "exceljs";
+import TestResult from "../models/testResultSchema.js";
 const createQuiz=async(req,res)=>{
     try {
         const { title, description, questions, createdBy } = req.body;
@@ -118,9 +120,9 @@ const getColleges=async(req,res)=>{
 
 const createCollegeExam=async(req,res)=>{
   try {
-      const { title, duration,college,examCode, questions } = req.body;
+      const { title, duration,college,examCode, questions,createdBy} = req.body;
   
-      if(!title || !duration || !college || !questions || !examCode){
+      if(!title || !duration || !college || !questions || !examCode || !createdBy){
         res.status(500).json({ error: 'All fields are mandatory' });
       }
       // Create a new quiz
@@ -130,6 +132,7 @@ const createCollegeExam=async(req,res)=>{
         college,
         examCode,
         questions,
+        createdBy
       });
   
       // Save the quiz to the database
@@ -186,5 +189,68 @@ const getAllExamQuestions = async(req,res)=>{
   }
 }
 
-export {createQuiz,getAllQuizes,getAllQuestions,deleteQuiz,updateQuiz,addCollege,getColleges,createCollegeExam,getExam,getAllExamQuestions,getExamById}
+const testResult=async(req,res)=>{
+  try {
+    const { createdBy,examId,examTitle,name,rollno,email,maxScore,score } = req.body;
+
+    const testResult = new TestResult({
+      createdBy,
+      examId,
+      examTitle,
+      name,
+      rollno,
+      email,
+      maxScore,
+      score,
+    });
+
+    await testResult.save();
+
+    res.status(201).json({ message: 'Test result saved successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const fetchResult=async(req,res)=>{
+  const { createdById } = req.params;
+  try {
+    const results = await TestResult.find({ createdBy: createdById });
+    res.status(200).json(results);
+  } catch (error) {
+    console.error('Failed to fetch results', error);
+    res.status(500).json({ message: 'Failed to fetch results' });
+  }
+}
+
+const viewResult=async(req,res)=>{
+  try {
+    const examId = req.params.examId;
+    const results = await TestResult.find({ examId });
+
+    const workbook = new excel.Workbook();
+    const worksheet = workbook.addWorksheet('Results');
+    worksheet.addRow(['Name', 'Roll Number', 'Email', 'Score', 'Max Score']);
+    results.forEach(result => {
+      worksheet.addRow([
+        result.name,
+        result.rollno,
+        result.email,
+        result.score,
+        result.maxScore,
+      ]);
+    });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=quiz_results.xlsx');
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Failed to generate Excel file');
+  }
+}
+
+export {createQuiz,getAllQuizes,getAllQuestions,deleteQuiz,updateQuiz,addCollege,getColleges,createCollegeExam,getExam,getAllExamQuestions,getExamById,testResult,fetchResult,viewResult}
 

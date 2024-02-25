@@ -5,23 +5,33 @@ import axios from 'axios';
 import ScoreCard from '../Pages/ScoreCard';
 import Loading from '../Pages/Loading';
 
+import {useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 const ExamPage = () => {
-  const { questions, setQuestions, refresh, setRefresh, flag, setFlag, correct, setCorrect, isSubmitClicked, setIsSubmitClicked } = useAppContext();
-  
+  const { questions, setQuestions, refresh, setRefresh, flag, setFlag, correct, setCorrect, isSubmitClicked, setIsSubmitClicked ,user} = useAppContext();
+
+  const navigate=useNavigate()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const exam=localStorage.getItem("examData")
   const examData = JSON.parse(exam)
+  const userObj=localStorage.getItem("userDetails");
+  const userDetails=JSON.parse(userObj)
+  const [showAlert, setShowAlert] = useState(false);
   const [isSelected,setIsSelected]=useState(false)
   const [count, setCount] = useState(0);
   const [timer, setTimer] = useState(examData.duration*60); // 60 minutes timer
   const [isLoading, setLoading] = useState(false);
+  const [finish, setFinish] = useState(false);
+
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
+
   const toast = useToast();
   const hours = Math.floor(timer / 3600);
   const minutes = Math.floor((timer % 3600) / 60);
   const seconds = timer % 60;
-  // console.log(examData.duration);
+  console.log(isSubmitClicked);
   
   const storedId = localStorage.getItem('examId');
-  
   useEffect(() => { 
     const getQuestions = async () => {
       if (refresh === true) {
@@ -31,6 +41,7 @@ const ExamPage = () => {
         setTimer(examData.duration* 60); // Reset the timer
       }
       try {
+        setFlag(false)
         setLoading(true);
         const { data } = await axios.get(`/api/v1/quiz/getAllExamQuestions/${storedId}`);
         setQuestions(data);
@@ -74,7 +85,8 @@ const ExamPage = () => {
     });
   };
 
-  const handleClick = (e) => {
+
+  const handleClick = () => {
     if (count >= questions.length) {
       setCount(0);
       return;
@@ -89,9 +101,58 @@ const ExamPage = () => {
       } else {
         question.result = "Wrong";
       }
-      setFlag(true);
+        
     });
+    setFlag(true);
+    onOpen()
   }
+
+  const saveResult=async()=>{
+    try {
+      const testResult= {
+        createdBy:examData.createdBy,
+        examId:examData._id,
+        examTitle:examData.title,
+        name:userDetails.name,
+        rollno:userDetails.rollNumber,
+        email:user.email,
+        maxScore:questions.length,
+        score:count,
+      };
+      await axios.post("/api/v1/quiz/saveResult",testResult);
+      toast({
+        title: "Your test is submitted Successfully!!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      toast({
+        title: "Your test is not submitted!!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    
+    if(localStorage.getItem("examData")){
+      localStorage.removeItem("examData")
+    }
+    else if(localStorage.getItem("examId")){
+      localStorage.removeItem("examId")
+    }
+    else if(localStorage.getItem("userDetails")){
+      localStorage.removeItem("userDetails")
+    }
+    navigate("/")
+    
+  }
+
+
+  
+  
 
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
@@ -117,7 +178,7 @@ const ExamPage = () => {
 
   return (
     <Box height={"100%"}>
-      {!flag || correct?<>{isLoading ? <Loading /> : <Box maxWidth="800px" margin="auto" p="4" mb={10} display={"flex"} flexDir={["column", "row"]} justifyContent={"space-arround"} >
+      {isLoading ? <Loading /> : <Box maxWidth="800px" margin="auto" p="4" mb={10} display={"flex"} flexDir={["column", "row"]} justifyContent={"space-arround"} >
         <List spacing="4" >
         <Heading as="h1" size="lg" mb="4">Exam Questions</Heading>
         {flag?<></>:<Box bg="gray.900" color="white" p="4" borderRadius="md" textAlign="center" mb="4" display={"flex"} justifyContent={"center"}
@@ -156,20 +217,31 @@ const ExamPage = () => {
                   ))}
                 </List>
               </RadioGroup>
-              {flag ? <Box mt={"5"} bg={question.result === "Correct" ? "green.200" : "red.200"} borderRadius={"4px"} textAlign={"center"}>{question.result}</Box> : ""}
             </ListItem>
           ))}
-          {!correct?<Button bg={'green.500'} color={"white"} alignItems={"center"} mt={5} mb={10} onClick={handleClick} isDisabled={isSubmitClicked}>Submit</Button>:
-        <Button bg={"green.600"} colorScheme="teal" onClick={handleSubmit} mt={5} mb={10}>
-          Retake Quiz 
-        </Button>}
+          <Button bg={'green.500'} color={"white"} alignItems={"center"} mt={5} mb={10} onClick={handleClick} isDisabled={isSubmitClicked}>Submit</Button>
         </List>
-         
-      </Box>}</>
-      :
-      <Box display={"flex"} justifyContent={"center"}>
-          <ScoreCard score={count} totalQuestions={questions.length} />
-        </Box>}
+        
+      </Box>
+      }
+      <Box>
+      <AlertDialog isOpen={isOpen} onClose={onClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader>Submit Exam</AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure you want to submit the exam?
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={onClose}>Cancel</Button>
+              <Button colorScheme="red" ml={3} onClick={saveResult}>
+                Finish
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </Box>
     </Box>
   );
 };

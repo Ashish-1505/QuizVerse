@@ -37,9 +37,8 @@ const ExamSchema = new mongoose.Schema({
     }
   ],
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: false
+    type: String,
+    required: true
   },
   createdAt: {
     type: Date,

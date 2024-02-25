@@ -6,13 +6,12 @@ import { useNavigate } from 'react-router-dom';
 const FillDetailsPage = ({ selectedOptionName, onClose }) => {
   const [name, setName] = useState('');
   const [rollNumber, setRollNumber] = useState('');
-  const [group, setGroup] = useState('');
+  
   const [examCode, setExamCode] = useState('');
   const toast=useToast()
   const userDetails = {
     name,
-    rollNumber,
-    group
+    rollNumber
   };
   const exam=localStorage.getItem("examData")
   const examData = JSON.parse(exam)
@@ -33,17 +32,19 @@ const FillDetailsPage = ({ selectedOptionName, onClose }) => {
   const navigate=useNavigate()
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(examCode==examData.examCode){
+    if(parseInt(examCode)===examData.examCode){
        navigate("/exam")
       localStorage.setItem('userDetails', JSON.stringify(userDetails));
+    }else{
+      toast({
+        title: "Please enter the correct exam code.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
-    toast({
-      title: "Please enter the correct exam code.",
-      status: "warning",
-      duration: 5000,
-      isClosable: true,
-      position: "top",
-    });
+  
    
     // onClose();
   };
@@ -66,11 +67,7 @@ const FillDetailsPage = ({ selectedOptionName, onClose }) => {
           </FormControl>
           <FormControl id="group" mb="4">
             <FormLabel>Exam Code</FormLabel>
-            <Input type="text" value={examCode} onChange={(e) => setExamCode(e.target.value)} background={"white"}/>
-          </FormControl>
-          <FormControl id="group" mb="4">
-            <FormLabel>Group</FormLabel>
-            <Input type="text" value={group} onChange={(e) => setGroup(e.target.value)} background={"white"}/>
+            <Input type="Number" value={examCode} onChange={(e) => setExamCode(e.target.value)} background={"white"}/>
           </FormControl>
           <Button type="submit" colorScheme="blue">Submit</Button>
           <Button ml="2" onClick={CloseForm}>Cancel</Button>
