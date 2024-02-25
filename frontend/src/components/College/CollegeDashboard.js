@@ -81,7 +81,7 @@ const CollegeDashboard = () => {
               <Tr key={title}>
                 <Td>{title}</Td>
                 <Td>{exams.find(exam => exam.examTitle === title)?.maxScore}</Td>
-                <Td>{users.size}</Td>
+                <Td>{exams.length}</Td>
                 <Td>
                   <Button colorScheme="teal" size="sm" onClick={()=>handleClick(exams.find(exam => exam.examTitle === title)?.examId, title)}>View Results</Button>
                 </Td>
