@@ -23,6 +23,8 @@ import ExamPage from './components/Exams/ExamPage';
 
 import CollegeDashboard from './components/College/CollegeDashboard';
 import CreateExam from './components/College/CreateExam';
+import Active from './components/Exams/Active';
+import Attempted from './components/Exams/Attempted';
 function App() {
   return (
     <div>
@@ -32,6 +34,8 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/quiz" element={<ProtectedRoute allowedRoles={['user']}><QuizPage/></ProtectedRoute>} />
+        <Route path="/active" element={<ProtectedRoute allowedRoles={['user']}><Active/></ProtectedRoute>} />
+        <Route path="/attempted" element={<ProtectedRoute allowedRoles={['user']}><Attempted/></ProtectedRoute>} />
         <Route path="/exam" element={<ProtectedRoute allowedRoles={['user']}><ExamPage/></ProtectedRoute>} />
         <Route path="/collegeTest" element={<ProtectedRoute allowedRoles={['user']}><Exams/></ProtectedRoute>} />
         <Route path="/filldetails" element={<ProtectedRoute allowedRoles={['user']}><FillDetailsPage/></ProtectedRoute>} />

@@ -204,6 +204,19 @@ const testResult=async(req,res)=>{
       score,
     });
 
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    }
+
+    if (exam.attemptedBy.includes(email)) {
+      return res.status(400).json({ message: 'User has already attempted this exam' });
+    }
+
+    exam.attemptedBy.push(email);
+    await exam.save();
+
+
     await testResult.save();
 
     res.status(201).json({ message: 'Test result saved successfully' });

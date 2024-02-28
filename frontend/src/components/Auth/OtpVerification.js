@@ -20,7 +20,6 @@ const OtpPage = () => {
   const [loading, setLoading] = useState(false)
   const toast=useToast()
   const handleSubmit = async () => {
-    // Do something with the entered OTP
     setLoading(true)
     const {data}=await axios.post('/api/v1/auth/verifyOTP',{
         userId:user._id,
@@ -65,21 +64,25 @@ const OtpPage = () => {
     <Box p={4} marginTop={"200px"} alignItems={"center"}>
       <Heading size={["sm","lg"]} marginBottom={4}>Enter 4-Digit OTP</Heading>
       <Stack spacing={4} align="center" display={"flex"} flexDir={"row"}>
-        <PinInput
-          value={otp} 
-          onChange={(value) => setOtp(value)}
-          autoFocus
-          size="lg"
-          onComplete={handleSubmit}
-          type="alphanumeric"
-          pattern="[0-9]*"
-          inputMode="numeric"
-        >
-          <PinInputField />
-          <PinInputField />
-          <PinInputField />
-          <PinInputField />
-        </PinInput>
+      <PinInput
+      value={otp} 
+      onChange={(value) => setOtp(value)}
+      autoFocus
+      size="lg"
+      onBlur={(value) => {
+        if (value.length === 4) {
+          handleSubmit();
+        }
+      }}
+      type="alphanumeric"
+      pattern="[0-9]*"
+      inputMode="numeric"
+    >
+      <PinInputField />
+      <PinInputField />
+      <PinInputField />
+      <PinInputField />
+</PinInput>
         <Button isLoading={loading} colorScheme="blue" size="lg" onClick={handleSubmit}>
           Submit
         </Button>

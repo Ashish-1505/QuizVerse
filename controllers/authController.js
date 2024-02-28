@@ -81,8 +81,17 @@ const sendOtpVerification=async(user,token,res)=>{
             from:"ashish113sharma@gmail.com",
             to:user.email,
             subject:"Verify Your Email",
-            html:`<p> Enter <b> ${otp} </b> in the app to verify your email`,
-        }
+            html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <h2 style="color: #333;">Verify Your Email Address for QUIZ VERSE account registration</h2>
+              <p style="color: #666;">Please use the OTP below to verify your email address:</p>
+              <div style="background-color: #f9f9f9; padding: 10px; margin-bottom: 20px;">
+                <h3 style="color: #333; font-size: 24px; margin: 0;">${otp}</h3>
+              </div>
+              <p style="color: #666;">This OTP is valid for a limited time. Do not share it with anyone.</p>
+            </div>
+          `,
+        } 
         const salt=10;
         const hashedOTP=await bcrypt.hash(otp,salt);
 

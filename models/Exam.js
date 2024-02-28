@@ -36,6 +36,10 @@ const ExamSchema = new mongoose.Schema({
       },
     }
   ],
+  attemptedBy: {
+    type: [String],
+    default: [],
+  },
   createdBy: {
     type: String,
     required: true
