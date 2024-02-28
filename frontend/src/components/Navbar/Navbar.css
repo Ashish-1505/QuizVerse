@@ -20,6 +20,7 @@
     margin-right: 1rem;
 }
 
+
 .navbar-link {
     color: #2d3748;
     text-decoration: none;
@@ -28,7 +29,7 @@
 }
 
 .navbar-link:hover {
-    background-color: #cbd5e0;
+    background-color: black;
     border-radius: 0.25rem;
 }
 
