@@ -37,31 +37,30 @@ const Navbar = () => {
       <LinkButton className="navbar-item" url="/collegeTest" title="College/University Exams" /></>:<></>}
       {user?<LogoutDropdown userName={user?.name}/>:""}
     </Box>}</>}
-           {user && user.role==='college'?<Box display={{ base: 'block', md: 'none' }}><Menu>
-              <MenuButton as={Button} variant="ghost">
-                  <HamburgerIcon boxSize={6} />
-                </MenuButton>
-                <MenuItem onClick={()=>navigate("/createExam")}>Create Exam</MenuItem>
-                  <MenuItem onClick={logoutUser}>Logout</MenuItem>
-                </Menu></Box>: <Box display={{ base: 'block', md: 'none' }}>
+           <Box display={{ base: 'block', md: 'none' }}>
               {user?<Menu>
                 <MenuButton as={Button} variant="ghost">
                   <HamburgerIcon boxSize={6} />
                 </MenuButton>
-                {user && user.role==='user'?<MenuList >
-                  <MenuItem onClick={()=>navigate("/")}>Home</MenuItem>
-                  <MenuItem onClick={()=>navigate("/collegeTest")}>College/University Exams</MenuItem>
-                  <MenuItem onClick={logoutUser}>Logout</MenuItem>
-                </MenuList>:user && <MenuList >
-                  <MenuItem onClick={()=>navigate("/createtest")}>Create Quiz</MenuItem>
-                  <MenuItem onClick={()=>navigate("/dashboard")}>DashBoard</MenuItem>
-                  <MenuItem onClick={()=>navigate("/allquizes")}>All Quizes</MenuItem>
-                  <MenuItem onClick={()=>navigate("/addcollege")}>All Quizes</MenuItem>
+                  {user && user.role==='college'?
+                  <MenuList>
+                    <MenuItem onClick={()=>navigate("/createexam")}>Create Exam</MenuItem> 
+                    <MenuItem onClick={logoutUser}>Logout</MenuItem>
+                    </MenuList> :<>{user && user.role==='user'?<MenuList > 
 
-                  <MenuItem onClick={logoutUser}>Logout</MenuItem>
-                </MenuList>}
+                    <MenuItem onClick={()=>navigate("/")}>Home</MenuItem>
+                    <MenuItem onClick={()=>navigate("/collegeTest")}>College/University Exams</MenuItem>
+                    <MenuItem onClick={logoutUser}>Logout</MenuItem>
+                  </MenuList>:user && <MenuList >
+                    <MenuItem onClick={()=>navigate("/createtest")}>Create Quiz</MenuItem>
+                    <MenuItem onClick={()=>navigate("/dashboard")}>DashBoard</MenuItem>
+                    <MenuItem onClick={()=>navigate("/allquizes")}>All Quizes</MenuItem>
+                    <MenuItem onClick={()=>navigate("/addcollege")}>Add College</MenuItem>
+
+                    <MenuItem onClick={logoutUser}>Logout</MenuItem>
+                  </MenuList>}</>}
               </Menu>:<></>}
-            </Box>}
+            </Box>
       </Flex>
     </Box>
   );
