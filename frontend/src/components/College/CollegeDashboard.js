@@ -5,6 +5,7 @@ import { useAppContext } from '../../context/appContext';
 
 const CollegeDashboard = () => {
   const [exams, setExams] = useState([]);
+  var [count,setCount]=useState(0)
   const toast=useToast()
   const {user}=useAppContext()
   useEffect(() => {
@@ -17,7 +18,7 @@ const CollegeDashboard = () => {
       }
     };
 
-    fetchExams();
+    fetchExams(); 
   }, []);
 
   const handleClick=async(examId,examTitle)=>{
@@ -52,9 +53,14 @@ const CollegeDashboard = () => {
     const groupedExams = {};
     exams.forEach(exam => {
       if (!groupedExams[exam.examTitle]) {
-        groupedExams[exam.examTitle] = new Set();
+        groupedExams[exam.examTitle] = {
+          maxScore: exam.maxScore,
+          maxAttempts: 0 
+        };
       }
-      groupedExams[exam.examTitle].add(exam.attemptedBy);
+
+      groupedExams[exam.examTitle].maxAttempts = Math.max(groupedExams[exam.examTitle].maxAttempts, exam.attemptedBy);
+
     });
     return groupedExams;
   };
@@ -77,15 +83,15 @@ const CollegeDashboard = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {Object.entries(groupedExams).map(([title, users]) => (
+            {Object.entries(groupedExams).map(([title, { maxScore, maxAttempts }]) => (
               <Tr key={title}>
                 <Td>{title}</Td>
-                <Td>{exams.find(exam => exam.examTitle === title)?.maxScore}</Td>
-                <Td>{exams.length}</Td>
+                <Td>{maxScore}</Td>
+                <Td>{maxAttempts}</Td>
                 <Td>
                   <Button colorScheme="teal" size="sm" onClick={()=>handleClick(exams.find(exam => exam.examTitle === title)?.examId, title)}>View Results</Button>
-                </Td>
-              </Tr>
+                </Td> 
+              </Tr> 
             ))}
           </Tbody>
         </Table>

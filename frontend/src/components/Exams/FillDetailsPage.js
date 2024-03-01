@@ -32,7 +32,7 @@ const FillDetailsPage = ({ selectedOptionName, onClose }) => {
   const navigate=useNavigate()
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(parseInt(examCode)===examData.examCode){
+    if(examCode===examData.examCode){
        navigate("/exam")
       localStorage.setItem('userDetails', JSON.stringify(userDetails));
     }else{
@@ -67,7 +67,7 @@ const FillDetailsPage = ({ selectedOptionName, onClose }) => {
           </FormControl>
           <FormControl id="group" mb="4">
             <FormLabel>Exam Code</FormLabel>
-            <Input type="Number" value={examCode} onChange={(e) => setExamCode(e.target.value)} background={"white"}/>
+            <Input type="text" value={examCode} onChange={(e) => setExamCode(e.target.value)} background={"white"}/>
           </FormControl>
           <Button type="submit" colorScheme="blue">Submit</Button>
           <Button ml="2" onClick={CloseForm}>Cancel</Button>

@@ -15,7 +15,7 @@ const ExamSchema = new mongoose.Schema({
     required:true
   },
   examCode:{
-    type:Number,
+    type:String,
     required:true
   },
   questions: [

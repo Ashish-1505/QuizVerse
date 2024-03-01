@@ -53,6 +53,7 @@ const CreateExam = () => {
 
  
 const handleSubmit = async () => {
+  console.log(examCode);
     if(!title || !duration || !examCode || !questions ){
       toast({
         title: "Please Enter all the feilds!",
@@ -166,7 +167,7 @@ const handleSubmit = async () => {
 
       <FormControl marginBottom="4">
         <FormLabel>Exam Code</FormLabel>
-        <Input type='Number' value={examCode} onChange={(e) => setExamCode(e.target.value)} />
+        <Input value={examCode} onChange={(e) => setExamCode(e.target.value)} />
       </FormControl>
 
       {questions.map((question, index) => (

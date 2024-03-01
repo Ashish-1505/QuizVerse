@@ -193,16 +193,6 @@ const testResult=async(req,res)=>{
   try {
     const { createdBy,examId,examTitle,name,rollno,email,maxScore,score } = req.body;
 
-    const testResult = new TestResult({
-      createdBy,
-      examId,
-      examTitle,
-      name,
-      rollno,
-      email,
-      maxScore,
-      score,
-    });
 
     const exam = await Exam.findById(examId);
     if (!exam) {
@@ -216,6 +206,17 @@ const testResult=async(req,res)=>{
     exam.attemptedBy.push(email);
     await exam.save();
 
+    const testResult = new TestResult({
+      createdBy,
+      examId,
+      examTitle,
+      name,
+      rollno,
+      email,
+      maxScore,
+      score,
+      attemptedBy:exam.attemptedBy.length,
+    });
 
     await testResult.save();
 
